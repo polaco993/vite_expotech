@@ -1,0 +1,2200 @@
+html {
+    scroll-behavior: smooth; /* Isso faz o site deslizar suavemente */
+    scroll-padding-top: 120px;
+}
+
+
+/* ========================================
+    1. VARIÁVEIS E CONFIGURAÇÕES GERAIS
+   ======================================== */
+:root {
+    /* Paleta de Cores */
+    --primary-color: #00818C;      /* Teal Escuro */
+    --bg-color: #f0faf9;           /* Mint Suave */
+    --text-dark: #0f172a;
+    --text-light: #64748b;
+    --white: #ffffff;
+    
+    /* Configurações do Menu */
+    --menu-width: 280px;           /* Largura mais estreita conforme pedido */
+    --transition-bezier: cubic-bezier(0.65, 0, 0.35, 1);
+    --shadow-soft: 0 20px 40px -10px rgba(0, 129, 140, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden; /* Evita rolagem horizontal */
+}
+
+/* ========================================
+    2. CÓDIGO DO MENU (MANTIDO INTEGRALMENTE)
+   ======================================== */
+
+/* Checkbox invisível */
+.nav-toggle { display: none; }
+
+/* Botão Hambúrguer */
+.nav-button {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--white);
+    border-radius: 50%; /* Ícone Redondo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover: Zoom leve (sem girar) */
+.nav-button:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 10px 25px -5px rgba(0, 129, 140, 0.3);
+}
+
+/* Ícone (Risquinhos) */
+.nav-icon {
+    position: relative;
+    width: 1.6rem;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.nav-icon::before, .nav-icon::after {
+    content: '';
+    position: absolute;
+    width: 1.6rem;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.nav-icon::before { transform: translateY(-8px); }
+.nav-icon::after { transform: translateY(8px); }
+
+/* Transformação em X quando ativo */
+.nav-toggle:checked ~ .nav-button .nav-icon { background-color: transparent; }
+.nav-toggle:checked ~ .nav-button .nav-icon::before { transform: translateY(0) rotate(45deg); }
+.nav-toggle:checked ~ .nav-button .nav-icon::after { transform: translateY(0) rotate(-45deg); }
+
+/* Container do Menu Lateral */
+.nav-menu {
+    position: fixed;
+    top: 0; right: 0;
+    width: var(--menu-width);
+    height: 100vh;
+    background: var(--white);
+    z-index: 999;
+    padding: 3rem 2rem;
+    box-shadow: -10px 0 40px rgba(0, 129, 140, 0.05);
+    transform: translateX(100%); /* Escondido */
+    transition: transform 0.5s var(--transition-bezier);
+}
+
+.nav-toggle:checked ~ .nav-menu { transform: translateX(0); }
+
+/* Cabeçalho do Menu */
+.menu-header {
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+}
+
+.brand-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Links */
+.menu-list { list-style: none; }
+
+.menu-link {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    padding-left: 0;
+    transition: all 0.3s ease;
+}
+
+.menu-link:hover {
+    color: var(--primary-color);
+    padding-left: 8px;
+    font-weight: 600;
+}
+
+.spacer {
+    height: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.login-link {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Overlay Escuro */
+.nav-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 998;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.4s ease;
+}
+
+.nav-toggle:checked ~ .nav-overlay { opacity: 1; pointer-events: auto; }
+
+/* ========================================
+    3. HERO SECTION (PÁGINA INICIAL NOVA)
+   ======================================== */
+
+.hero-section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Fundo com Imagem + Máscara Teal */
+.hero-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    
+    /* Imagem de Fundo (Exemplo de Medicina/Tecnologia) */
+    background-image: url('pexels-karola-g-4021779.jpg');
+    background-size: cover;
+    background-position: center;
+    
+    /* Gradiente por cima da imagem para garantir leitura */
+    background: linear-gradient(
+        to right, 
+        rgba(240, 250, 249, 0.98) 25%, /* Cor sólida na esquerda (atrás do texto) */
+        rgba(240, 250, 249, 0.85) 50%,
+        rgba(0, 129, 140, 0.4) 100%    /* Transparente na direita (sobre o logo) */
+    ), url('pexels-karola-g-4021779.jpg');
+    
+    background-size: cover;
+    background-position: center;
+}
+
+/* Grid Layout Central */
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 88%;
+    max-width: 1200px;
+    align-items: center;
+    gap: 4rem;
+}
+
+/* --- TEXTOS (ESQUERDA) --- */
+.text-content {
+    animation: slideIn 1s ease-out;
+    padding-right: 2rem;
+}
+
+.mini-tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 129, 140, 0.1);
+}
+
+.main-title {
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
+    line-height: 1.15;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 1.15rem;
+    color: #475569; /* Cinza um pouco mais escuro para leitura */
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+}
+
+.btn-action {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 20px rgba(0, 129, 140, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn-action:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 129, 140, 0.4);
+}
+
+/* --- VISUAL (DIREITA) --- */
+.visual-content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-logo {
+    width: 100%;
+    max-width: 450px; /* Tamanho máximo do logo */
+    z-index: 2;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+}
+
+.glow-effect {
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    background: var(--primary-color);
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.25;
+    z-index: 1;
+    animation: pulse 4s infinite alternate;
+}
+
+/* --- ANIMAÇÕES (KEYFRAMES) --- */
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-25px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.2; }
+    100% { transform: scale(1.2); opacity: 0.35; }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- RESPONSIVIDADE (TABLET E MOBILE) --- */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr; /* Coluna única */
+        text-align: center;
+        padding-top: 60px;
+        gap: 2rem;
+    }
+
+    .text-content {
+        padding-right: 0;
+    }
+    
+    .description {
+        margin: 0 auto 2rem auto; /* Centraliza o texto */
+    }
+
+    .visual-content {
+        margin-top: 0;
+    }
+    
+    .hero-logo {
+        width: 60%; /* Reduz o logo no mobile */
+        max-width: 300px;
+    }
+    
+    /* Ajusta o gradiente do fundo para o mobile */
+    .hero-bg {
+        background: linear-gradient(
+            to bottom, 
+            rgba(240, 250, 249, 0.95) 40%, 
+            rgba(240, 250, 249, 0.7) 100%
+        ), url('pexels-karola-g-4021779.jpg');
+        background-size: cover;
+    }
+}
+
+
+
+/* ========================================
+   ESTILOS GERAIS DAS NOVAS SEÇÕES
+   ======================================== */
+.section-padrao {
+    padding: 160px 0;
+}
+
+.bg-light {
+    background-color: #f8fafc; /* Um cinza muito clarinho para diferenciar */
+}
+
+.container-content {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+/* ========================================
+   MENU SECUNDÁRIO (DARK & STICKY)
+   ======================================== */
+.sub-menu-container {
+    background-color: #003b42; /* Fundo Escuro */
+    padding: 1rem 0;
+    position: sticky; /* Cola no topo */
+    top: 0;
+    z-index: 100; /* Fica acima do conteúdo */
+    border-bottom: 4px solid var(--primary-color); /* Linha fina Teal embaixo */
+}
+
+.sub-menu {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: 4rem;
+    flex-wrap: wrap;
+}
+
+.sub-menu li a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8); /* Branco levemente transparente */
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sub-menu li a:hover {
+    color: var(--white);
+    text-shadow: 0 0 10px rgba(0, 129, 140, 0.5); /* Brilho Teal */
+}
+
+/* ========================================
+   1. PREFÁCIO (Design Limpo & Colorido)
+   ======================================== */
+
+/* Novo Cabeçalho (Sem retângulo) */
+.section-header-clean {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-header-clean h2 {
+    font-size: 3rem; /* Título bem grande */
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+}
+
+.section-header-clean p {
+    color: var(--text-light);
+    font-size: 1.2rem;
+}
+
+/* Linha decorativa embaixo do texto */
+.header-line {
+    width: 60px;
+    height: 4px;
+    background: var(--primary-color);
+    margin: 1.5rem auto 0; /* Centralizado */
+    border-radius: 2px;
+}
+
+/* Grid dos Cards */
+.preface-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* --- ESTILO GERAL DO CARD --- */
+.preface-card {
+    background: var(--white);
+    padding: 2.5rem 2rem;
+    border-radius: 20px; /* Mais arredondado */
+    border: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center; /* Alinha ícone e texto no centro vertical */
+    gap: 1.5rem;
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+/* Configuração das Cores Específicas */
+.color-mint { --hover-color: #99e8c2; }
+.color-blue { --hover-color: #75d4fb; }
+.color-pink { --hover-color: #fcb6e1; }
+
+/* ÍCONES (SVG) */
+.card-icon-wrapper {
+    min-width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Bolinha perfeita */
+    background-color: #f8fafc; /* Cinza bem clarinho padrão */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #64748b; /* Cinza escuro padrão */
+    transition: all 0.4s ease;
+}
+
+.card-icon-wrapper svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* IMAGEM (CARD 3) */
+.card-img-wrapper {
+    min-width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden; /* Corta a imagem em círculo */
+    border: 2px solid #f1f5f9; /* Bordinha cinza inicial */
+    transition: all 0.4s ease;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem preencha o círculo sem esticar */
+}
+
+/* --- EFEITOS AO PASSAR O MOUSE (HOVER) --- */
+
+.preface-card:hover {
+    transform: translateY(-5px);
+    /* Sombra colorida suave baseada na cor do card */
+    box-shadow: 0 15px 30px var(--hover-color); 
+    border-color: var(--hover-color); /* A borda inteira muda de cor */
+}
+
+/* Muda a cor do fundo do ícone */
+.preface-card:hover .card-icon-wrapper {
+    background-color: var(--hover-color);
+    color: #fff; /* Ícone fica branco */
+    transform: scale(1.1); /* Cresce um pouquinho */
+}
+
+/* Muda a borda da imagem */
+.preface-card:hover .card-img-wrapper {
+    border-color: var(--hover-color);
+    transform: scale(1.1);
+}
+
+/* Ajuste fino dos textos */
+.card-text h3 {
+    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+    color: var(--text-dark);
+}
+
+.card-text p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-light);
+}
+
+/* ========================================
+   2. SEÇÃO ENFERMO (Mosaico com Cores do Projeto)
+   ======================================== */
+
+#enfermo {
+    scroll-margin-top: 150px;
+}
+
+/* --- Cabeçalho Limpo --- */
+.section-header-clean {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.clean-subtext {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #00818C; /* Cor Principal (Teal) */
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+/* --- Grid Mosaico --- */
+.mosaic-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; 
+    gap: 1.5rem;
+    height: 450px; 
+}
+
+/* Estilo Base dos Cards */
+.mosaic-card {
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.mosaic-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 129, 140, 0.15); /* Sombra Teal */
+}
+
+/* --- COLUNA ESQUERDA (IMAGEM) --- */
+.main-visual {
+    display: flex;
+    align-items: flex-end;
+}
+
+.mosaic-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    transition: transform 0.5s ease;
+}
+
+.main-visual:hover .mosaic-bg { transform: scale(1.05); }
+
+.mosaic-overlay {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent);
+    width: 100%;
+    padding: 2rem;
+    border-radius: 0 0 20px 20px;
+    color: white;
+}
+
+/* --- COLUNA DIREITA (CARDS MENORES) --- */
+.mosaic-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.small-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* --- CARD CLARO (Zero Espera) --- */
+.card-light {
+    background-color: #f0faf9; /* Fundo Menta Claro (Projeto) */
+    border: 1px solid #99e8c2; /* Borda Menta (Projeto) */
+}
+
+.card-light h4 { color: #00818C; font-size: 1.3rem; margin-bottom: 0.2rem; }
+.card-light p { color: #5a6b7c; font-size: 0.95rem; }
+
+/* --- CARD ESCURO (Segurança) --- */
+.card-dark {
+    background-color: #00818C; /* Fundo Teal Principal (Projeto) */
+    color: white;
+}
+
+/* Ícones */
+.mosaic-icon {
+    width: 45px; height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Ícone Azul (#75d4fb) no fundo claro */
+.icon-blue {
+    background: white;
+    color: #75d4fb; 
+}
+
+/* Ícone Rosa (#fcb6e1) no fundo escuro */
+.icon-pink {
+    background: rgba(255,255,255,0.15);
+    color: #fcb6e1;
+}
+
+.mosaic-icon svg { width: 24px; height: 24px; }
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .mosaic-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    .main-visual { height: 300px; }
+}
+
+
+/* ========================================
+   3. SEÇÃO MÉDICO (Dark & Glass)
+   ======================================== */
+
+#medico {
+    scroll-margin-top: 150px;
+}
+
+/* Configuração do Fundo com Imagem */
+.section-medico {
+    position: relative;
+    padding: 140px 0;
+    /* A Imagem de Fundo (Médico focado) + Uma camada preta por cima */
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)), 
+                url('https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Efeito Parallax (Imagem parada ao rolar) */
+    color: white;
+}
+
+/* Header Alinhado à Esquerda */
+.section-header-left {
+    max-width: 600px;
+    margin-bottom: 4rem;
+}
+
+.highlight-tag {
+    color: #75d4fb; /* Azul Céu (Projeto) */
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.section-header-left h2 {
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.section-header-left p {
+    font-size: 1.1rem;
+    color: #cbd5e1; /* Cinza claro */
+    line-height: 1.6;
+}
+
+/* Grid dos Cards de Vidro */
+.medico-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* --- O Efeito de Vidro (Glassmorphism) --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05); /* Branco quase transparente */
+    backdrop-filter: blur(10px); /* O desfoque mágico */
+    -webkit-backdrop-filter: blur(10px); /* Para Safari */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+    padding: 2.5rem;
+    border-radius: 20px;
+    transition: transform 0.3s ease, background 0.3s;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1); /* Fica um pouco mais claro no hover */
+    border-color: #99e8c2; /* Borda fica Menta no hover */
+}
+
+.glass-icon {
+    width: 50px; height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    color: #75d4fb; /* Ícone Azul Céu */
+}
+
+.glass-icon svg { width: 26px; height: 26px; }
+
+.glass-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    color: white;
+}
+
+.glass-card p {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .section-header-left h2 { font-size: 2.2rem; }
+    .section-medico { background-attachment: scroll; /* Desliga parallax no celular para não travar */ }
+}
+
+/* ========================================
+   SEÇÃO 4: PARENTE
+   ======================================== */
+
+/* Garante o scroll correto no menu */
+#parente {
+    scroll-margin-top: 150px;
+}
+
+.split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+/* Lista renomeada para não dar conflito, mas com o mesmo estilo */
+.parente-benefits-list {
+    list-style: none;
+    margin-top: 2.5rem;
+    padding: 0;
+}
+
+.parente-benefits-list li {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Ícone de Check */
+.icon-check {
+    min-width: 24px;
+    height: 24px;
+    background-color: rgba(0, 129, 140, 0.1);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2px;
+}
+
+.icon-check svg { width: 14px; height: 14px; }
+
+/* Textos */
+.parente-benefits-list strong {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    margin-bottom: 0.2rem;
+}
+
+.parente-benefits-list p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* --- Visual (Imagem original) --- */
+.image-frame {
+    position: relative;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.image-frame img {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    display: block;
+    transform: rotate(2deg);
+    transition: transform 0.5s ease;
+    border: 4px solid var(--white);
+}
+
+.image-frame:hover img {
+    transform: rotate(0deg) scale(1.02);
+}
+
+/* Badge Flutuante */
+.floating-badge {
+    position: absolute;
+    bottom: 30px;
+    left: -20px;
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 2;
+    border-left: 4px solid var(--primary-color);
+}
+
+.floating-badge .stars {
+    color: #fbbf24;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.floating-badge span:last-child {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .image-frame img { transform: rotate(0deg); }
+    .floating-badge { left: 10px; bottom: 10px; }
+}
+
+
+
+/* ========================================
+   SEÇÃO 5: HOSPITAL (Grid 5 Itens + CTA Premium)
+   ======================================== */
+
+#hospital {
+    scroll-margin-top: 150px;
+}
+
+.bg-white {
+    background-color: var(--white);
+}
+
+/* --- Grid de 5 Itens --- */
+.corp-grid-5 {
+    display: grid;
+    /* Cria colunas de no mínimo 300px */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 5rem;
+    /* Isso garante que a última linha fique centralizada */
+    justify-content: center;
+}
+
+/* Card Corporativo */
+.corp-card {
+    padding: 2rem;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    /* Alinha o conteúdo à esquerda */
+    align-items: flex-start; 
+}
+
+.corp-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 129, 140, 0.08); /* Sombra Teal suave */
+    border-color: #00818C; /* Borda Teal no hover */
+}
+
+/* Ícones */
+.corp-icon {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.corp-icon svg { width: 26px; height: 26px; }
+
+/* Paleta de Cores dos Ícones */
+.color-teal { background: rgba(0, 129, 140, 0.1); color: #00818C; }
+.color-pink { background: rgba(252, 182, 225, 0.2); color: #db2777; }
+.color-mint { background: rgba(153, 232, 194, 0.2); color: #059669; }
+.color-blue { background: rgba(117, 212, 251, 0.15); color: #0284c7; }
+/* Nova cor para o 5º item */
+.color-purple { background: rgba(168, 85, 247, 0.15); color: #9333ea; }
+
+.corp-card h3 {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+}
+
+.corp-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* --- CTA Premium (Melhorado) --- */
+.premium-cta-box {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    border: 1px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Detalhe visual (borda esquerda colorida) */
+.premium-cta-box::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 6px;
+    background: var(--primary-color); /* Teal */
+}
+
+.premium-icon {
+    min-width: 60px;
+    height: 60px;
+    background: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    color: var(--primary-color);
+}
+.premium-icon svg { width: 30px; height: 30px; }
+
+.premium-content {
+    flex: 1; /* Ocupa o espaço disponível */
+}
+
+.premium-content h3 {
+    font-size: 1.6rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.premium-content p {
+    color: var(--text-light);
+    font-size: 1.05rem;
+    max-width: 600px;
+}
+
+.premium-action {
+    /* Garante que o botão não encolha */
+    flex-shrink: 0;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .premium-cta-box {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem;
+    }
+    .premium-cta-box::before {
+        width: 100%;
+        height: 6px; /* Borda vai para o topo no celular */
+    }
+}
+
+
+
+/* ========================================
+   RODAPÉ (FOOTER) - ATUALIZADO
+   ======================================== */
+
+.site-footer {
+    background-color: #0f172a; /* Fundo Escuro */
+    padding: 80px 0 40px 0;
+    color: #94a3b8;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.container-footer {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+/* Marca no Rodapé (Estilo Novo: Fina e Branca) */
+.footer-brand {
+    text-align: center;
+}
+
+.brand-name-footer {
+    color: #ffffff;       /* Totalmente branco */
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    font-weight: 300;     /* Fonte Fina (Light) */
+}
+
+/* Grid de Links */
+.footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    width: 100%;
+}
+
+/* Estilo do Link (Cápsula Neutra) */
+.footer-link {
+    text-decoration: none;
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 20px;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* EFEITO HOVER ATUALIZADO (ROSA #fcb6e1)
+   Converti #fcb6e1 para RGB: 252, 182, 225 para fazer as transparências
+*/
+.footer-link:hover {
+    border-color: #fcb6e1;  /* Borda Rosa */
+    color: #fcb6e1;         /* Texto Rosa */
+    
+    /* Fundo Rosa bem clarinho (10% de opacidade) */
+    background: rgba(252, 182, 225, 0.1); 
+    
+    transform: translateY(-3px);
+    
+    /* Sombra Rosa suave */
+    box-shadow: 0 5px 15px rgba(252, 182, 225, 0.2); 
+}
+
+/* Linha Final */
+.footer-bottom {
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .footer-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+}
+
+/* ========================================
+   BOTÃO VOLTAR AO TOPO
+   ======================================== */
+
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color); /* Teal da marca */
+    color: var(--white);
+    
+    border-radius: 50%; /* Redondo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    
+    /* Sombras e Camadas */
+    box-shadow: 0 4px 10px rgba(0, 129, 140, 0.3);
+    z-index: 900; /* Fica acima do conteúdo, mas abaixo do menu lateral */
+    
+    /* ESTADO INICIAL: ESCONDIDO */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px); /* Começa um pouco mais pra baixo */
+    transition: all 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.back-to-top svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* ESTADO QUANDO APARECE (Adicionado via Script) */
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Efeito Hover (Ao passar o mouse) */
+.back-to-top:hover {
+    background-color: #0f172a; /* Fica escuro ao passar o mouse */
+    transform: translateY(-5px); /* Sobe um pouquinho */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajuste para Celular (Botão um pouco menor) */
+@media (max-width: 768px) {
+    .back-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .back-to-top svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+
+/* ========================================
+   RODAPÉ (FOOTER) - REFORÇO
+   ======================================== */
+.site-footer {
+    background-color: #0f172a !important; /* O !important força a cor escura */
+    color: #94a3b8;
+    padding: 80px 0 40px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Marca Branca */
+.brand-name-footer {
+    color: #ffffff;
+    font-weight: 300;
+}
+
+/* Links */
+.footer-link {
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Hover Rosa */
+.footer-link:hover {
+    border-color: #fcb6e1;
+    color: #fcb6e1;
+    background: rgba(252, 182, 225, 0.1);
+}
+
+/* ========================================
+   CORREÇÃO DE ESPAÇAMENTO (FORCE)
+   ======================================== */
+
+#prefacio {
+    /* 1. Isso empurra o conteúdo para baixo visualmente */
+    margin-top: 75px; 
+    
+    /* 2. Isso cria uma "barreira invisível" de 150px no topo.
+       Quando você clica no menu, o site para 150px ANTES de chegar no título.
+       Assim o menu preto não cobre nada. */
+    scroll-margin-top: 100px;
+    
+    /* 3. Espaço interno extra só pra garantir */
+    padding-top: 50px;
+}
+
+/* Aumentar o espaço de TODAS as seções (Funcionalidades, Planos, etc) */
+.section-padrao {
+    padding-top: 120px !important;
+    padding-bottom: 120px !important;
+}
+
+
+
+
+
+
+/* ========================================
+   PAGINA SERVIÇOS
+   ======================================== */
+
+
+
+/* --- Lógica de Ocultação dos Inputs --- */
+input[name="slider"] { 
+    display: none !important; 
+    visibility: hidden;
+}
+
+/* --- Layout Dividido (Split Screen) --- */
+.split-layout { 
+    display: flex; 
+    flex-wrap: wrap; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 50px; 
+    margin-top: 40px; 
+}
+
+.coluna-celular { flex: 1; min-width: 300px; text-align: center; }
+.coluna-texto { flex: 1; min-width: 300px; }
+
+/* --- Moldura do Celular (Proporção 410x874) --- */
+.moldura-fina { 
+    width: 250px; 
+    height: 533px; /* Proporção mantida para 410x874 */
+    margin: 0 auto; 
+    border: 3px solid var(--primary-color); 
+    border-radius: 40px; 
+    overflow: hidden; 
+    background: #fff; 
+    position: relative; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.container-imagens { 
+    display: flex; 
+    width: 500%; 
+    height: 100%; 
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.img-slide { width: 20%; height: 100%; }
+
+/* Ajuste para mostrar a imagem sem cortar (contain) ou preencher (cover) */
+.img-slide img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; /* Mude para 'cover' se quiser que preencha 100% da tela */
+    background-color: #ffffff;
+}
+
+/* --- Navegação e Texto --- */
+.slider-nav { margin: 25px 0; display: flex; justify-content: center; gap: 12px; }
+.slider-nav label { 
+    width: 14px; height: 14px; 
+    background: #ccc; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    transition: 0.3s;
+}
+
+.container-texto { text-align: left; }
+.texto-slide { display: none; animation: fadeIn 0.4s ease-in-out; }
+.texto-slide h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 1.5rem; }
+.texto-slide p { font-size: 1.1rem; line-height: 1.6; color: #555; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- Lógica de Conexão (Input -> Imagem/Texto) --- */
+#s1:checked ~ .split-layout .container-imagens { transform: translateX(0%); }
+#s2:checked ~ .split-layout .container-imagens { transform: translateX(-20%); }
+#s3:checked ~ .split-layout .container-imagens { transform: translateX(-40%); }
+#s4:checked ~ .split-layout .container-imagens { transform: translateX(-60%); }
+#s5:checked ~ .split-layout .container-imagens { transform: translateX(-80%); }
+
+/* Exibir texto correspondente */
+#s1:checked ~ .split-layout .container-texto .t1,
+#s2:checked ~ .split-layout .container-texto .t2,
+#s3:checked ~ .split-layout .container-texto .t3,
+#s4:checked ~ .split-layout .container-texto .t4,
+#s5:checked ~ .split-layout .container-texto .t5 { display: block !important; }
+
+/* Estilizar bolinha ativa */
+#s1:checked ~ .split-layout .slider-nav label[for="s1"],
+#s2:checked ~ .split-layout .slider-nav label[for="s2"],
+#s3:checked ~ .split-layout .slider-nav label[for="s3"],
+#s4:checked ~ .split-layout .slider-nav label[for="s4"],
+#s5:checked ~ .split-layout .slider-nav label[for="s5"] { 
+    background: var(--primary-color); 
+    transform: scale(1.2);
+}
+
+
+/* Regra para a página de Serviços */
+.page-servicos .hero-bg {
+    background: linear-gradient(
+        to right, 
+        rgba(240, 250, 249, 0.98) 25%, 
+        rgba(240, 250, 249, 0.85) 50%,
+        rgba(0, 129, 140, 0.4) 100%
+    ), url('pexels-jmeyer1220-668300\ \(1\).jpg'); /* TROQUE PELO NOME DA IMAGEM */
+    background-size: cover;
+    background-position: center;
+}
+
+
+
+.secao-psico {
+    padding: 150px 20px;
+    position: relative;
+    
+    /* Fundo escurecido */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('pexels-pixabay-219998.jpg');
+                
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll; /* Isso garante que a imagem role com a página */
+    text-align: center;
+}
+
+/* Altera a cor do título principal da seção Psicologia */
+.secao-psico h2 {
+    color: #ffffff; /* Mude este código para a cor que desejar */
+    margin-bottom: 40px;
+    font-size: 2.5rem; /* Ajuste o tamanho se necessário */
+}
+
+.grid-texto-psico {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1300px;
+    margin: 60px auto 0;
+    flex-wrap: wrap;
+}
+
+.card-texto {
+    flex: 1;
+    min-width: 350px;
+    padding: 60px;
+    
+    /* Mais transparente: mudei de 0.2 para 0.1 */
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(15px); /* Aumentei o desfoque para ficar mais elegante */
+    
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    transition: 0.3s;
+}
+
+/* Forçando a cor branca em TUDO dentro do card */
+.card-texto h3, 
+.card-texto p {
+    color: #ffffff !important;
+}
+
+.card-texto:hover {
+    background: rgba(255, 255, 255, 0.15); /* Apenas um leve toque ao passar o mouse */
+}
+
+
+
+/* Seção integrada ao fundo branco do site */
+.secao-acolhimento-branca {
+    padding: 100px 20px;
+    background-color: #ffffff; /* Fundo branco puro */
+    text-align: center;
+}
+
+.titulo-sessao-preto {
+    color: #00818C; /* Texto escuro para fundo branco */
+    font-size: 2.5rem;
+    margin-bottom: 80px;
+    text-transform: uppercase;
+}
+
+.grid-acolhimento {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.card-branco {
+    flex: 1;
+    min-width: 300px;
+    padding: 60px 40px 40px 40px;
+    background: #ffffff; 
+    /* Sombra leve para destacar o quadro branco no fundo branco */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+    border-radius: 20px;
+    position: relative;
+    border: 1px solid #f0f0f0; /* Borda bem clarinha */
+}
+
+/* Bolinha Superior com imagem */
+.bolinha-superior {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    background-color: #00818c; /* Cor de destaque ao redor da foto */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.bolinha-superior img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Textos em tons de cinza escuro para facilitar a leitura */
+.card-branco h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #00818c; /* Destaque no título do card */
+}
+
+.card-branco p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #666666;
+}
+
+
+
+.secao-sobre-container {
+    padding: 80px 20px;
+    background-color: #ffffff; /* Fundo branco para continuar o site */
+    display: flex;
+    justify-content: center;
+}
+
+.caixa-sobre {
+    display: flex;
+    align-items: center;
+    max-width: 900px;
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    /* Sombra suave para dar profundidade na caixa */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+}
+
+.foto-perfil {
+    flex: 1;
+    max-width: 400px;
+}
+
+.foto-perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a foto preencha o espaço sem esticar */
+    display: block;
+}
+
+.conteudo-sobre {
+    flex: 1.2;
+    padding: 50px;
+    text-align: left;
+}
+
+.conteudo-sobre h2 {
+    color: #00818c;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.conteudo-sobre p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+/* Estilo do link clicável */
+.link-saiba-mais {
+    color: #00818c;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.link-saiba-mais:hover {
+    color: #004d4d;
+    transform: translateX(5px); /* Pequeno movimento ao passar o mouse */
+}
+
+/* Ajuste para celular */
+@media (max-width: 768px) {
+    .caixa-sobre {
+        flex-direction: column;
+    }
+    .foto-perfil {
+        max-width: 100%;
+    }
+}
+
+
+.secao-faq {
+    padding: 80px 20px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+}
+
+.container-faq {
+    width: 100%;
+    max-width: 800px;
+}
+
+.titulo-sessao-faq {
+    text-align: center;
+    color: #333;
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+}
+
+.faq-item {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Esconde o checkbox original */
+.faq-check {
+    display: none;
+}
+
+/* Estilo da Pergunta (Label) */
+.faq-pergunta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #f9f9f9;
+    cursor: pointer;
+    font-weight: bold;
+    color: #00818c;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.faq-pergunta:hover {
+    background: #f0f7f7;
+}
+
+/* Ícone de seta que gira */
+.icone-seta::after {
+    content: '+';
+    font-size: 1.5rem;
+    transition: 0.3s;
+}
+
+/* Estilo da Resposta (Escondida por padrão) */
+.faq-resposta {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    background: #fff;
+}
+
+.faq-resposta p {
+    padding: 20px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Lógica para abrir quando o checkbox for marcado */
+.faq-check:checked ~ .faq-resposta {
+    max-height: 200px; /* Ajuste conforme o tamanho do texto */
+}
+
+.faq-check:checked ~ .faq-pergunta .icone-seta::after {
+    content: '-';
+    transform: rotate(180deg);
+}
+
+
+
+
+
+
+/* ========================================
+   PAGINA SOBRE
+   ======================================== */
+
+   /* Regra para a página de Sobre */
+.page-sobre .hero-bg {
+    background: linear-gradient(
+        to right, 
+        rgba(240, 250, 249, 0.98) 25%, 
+        rgba(240, 250, 249, 0.85) 50%,
+        rgba(0, 129, 140, 0.4) 100%
+    ), url('pexels-pixabay-39284.jpg'); /* TROQUE PELO NOME DA IMAGEM */
+    background-size: cover;
+    background-position: center;
+}
+
+
+.secao-setores {
+    padding: 80px 20px;
+    background-color: #ffffff;
+}
+
+.grid-setores {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap; /* Permite quebrar em telas pequenas */
+}
+
+.card-setor {
+    flex: 1 1 300px; /* Cresce, encolhe e tem base de 300px */
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: #ffffff;
+    
+    /* Borda esfumaçada inicial */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); 
+    
+    /* Transição suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Efeito ao passar o mouse */
+.card-setor:hover {
+    transform: scale(1.05); /* Aumenta 5% */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25); /* Sombra mais intensa */
+}
+
+/* Cores Fortes */
+.amarelo { background-color: #f7a800; }
+.vermelho { background-color: #d32f2f; }
+.azul { background-color: #1976d2; }
+
+/* Estilização dos textos */
+.card-setor h3 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+}
+
+.card-setor p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ffffff;
+}
+
+
+
+/* Seção principal - Garantindo altura mínima */
+.secao-membros {
+    position: relative;
+    padding: 80px 20px;
+    min-height: 600px; /* Garante que a seção tenha altura mesmo se não houver conteúdo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Fundo - Verifique se o caminho da imagem está correto */
+.fundo-embaçado {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('WhatsApp\ Image\ 2026-03-15\ at\ 20.43.25.jpeg'); /* COLOQUE O LINK DIRETO DA IMAGEM AQUI */
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+/* Fotos redondas grandes (250px) */
+.foto-redonda {
+    width: 250px;  /* Ajustado para 250px */
+    height: 250px; /* Ajustado para 250px */
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #00818c;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.foto-redonda img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Restante do estilo mantido */
+.container-membros {
+    max-width: 1100px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 60px 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.grid-membros {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.card-membro {
+    flex: 1;
+    min-width: 280px;
+    max-width: 320px;
+}
+
+.secao-membros h2, 
+.card-membro h3, 
+.card-membro p {
+    color: #00818c;
+}
+
+
+.secao-colaboradores {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+/* Títulos e textos finos */
+.secao-colaboradores h2 {
+    color: #00818c;
+    font-weight: 300;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    color: #00818c;
+    font-weight: 300;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+/* Imagem Central Grande */
+.destaque-colaborador img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #00818c;
+    margin-bottom: 50px;
+}
+
+/* Grade das 3 imagens pequenas */
+.grid-tres-imagens {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.item-redondo img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #00818c;
+    transition: transform 0.3s ease;
+}
+
+/* Efeito ao passar o mouse */
+.item-redondo img:hover {
+    transform: scale(1.1);
+}
+
+
+/* ========================================
+   PAGINA TECNOLOGIAS 
+   ======================================== */
+
+  /* Regra para a página de Sobre */
+.page-tecnologias .hero-bg {
+    background: linear-gradient(
+        to right, 
+        rgba(240, 250, 249, 0.98) 25%, 
+        rgba(240, 250, 249, 0.85) 50%,
+        rgba(0, 129, 140, 0.4) 100%
+    ), url('https://img.cdndsgni.com/preview/10922819-m.jpg'); /* TROQUE PELO NOME DA IMAGEM */
+    background-size: cover;
+    background-position: center;
+}
+
+
+.secao-construcao-premium { padding: 80px 0; text-align: center; }
+.container-senior { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+.titulo-sessao-senior { 
+    color: #00818c; 
+    font-weight: 300; 
+    font-size: 2.8rem; 
+    margin-bottom: 60px; 
+}
+
+/* Grid e Cards com marcações de cores */
+.grid-cards-coloridos { display: flex; gap: 30px; margin-bottom: 50px; }
+.card-senior { 
+    flex: 1; 
+    padding: 25px; 
+    background: #fff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* As bordas coloridas que você pediu */
+.border-laranja { border-top: 6px solid #ff8c00; }
+.border-azul { border-top: 6px solid #007bff; }
+.border-amarelo { border-top: 6px solid #ffc107; }
+
+.card-senior img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 15px; }
+.card-senior h3, .card-senior p { color: #00818c; font-weight: 300; }
+
+/* Banner Escuro: Grande largura, baixa altura */
+.banner-escuro-horizontal {
+    background-color: #1a1a1a;
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.conteudo-banner { 
+    display: flex; 
+    align-items: center; 
+    min-height: 180px; /* Mantendo a altura baixa */
+}
+
+.imagem-banner { flex: 0 0 35%; height: 180px; }
+.imagem-banner img { width: 100%; height: 100%; object-fit: cover; }
+
+.texto-banner { flex: 1; padding: 30px 50px; text-align: left; }
+.texto-banner h3 { color: #ffffff; font-weight: 300; margin-bottom: 10px; }
+.texto-banner p { color: #cccccc; font-weight: 300; font-size: 1rem; line-height: 1.5; }
+
+
+.secao-split-view { padding: 80px 0; background: #fff; text-align: center; }
+
+.split-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px; /* Espaço entre o celular e o site */
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+/* Moldura Celular (Vertical) */
+.moldura-celular {
+    width: 220px;
+    height: 460px;
+    border: 4px solid #00818c;
+    border-radius: 35px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Moldura Browser (Retangular) */
+.moldura-browser {
+    width: 550px; /* Bem mais largo */
+    height: 350px; /* Altura de site */
+    border: 4px solid #00818c;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+/* Trilhas de Imagens */
+.track-imagens-mobile, .track-imagens-web {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide { width: 33.333%; height: 100%; }
+.slide img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- Lógica de Sincronização --- */
+#opt1:checked ~ .split-container .track-imagens-mobile,
+#opt1:checked ~ .split-container .track-imagens-web { transform: translateX(0%); }
+
+#opt2:checked ~ .split-container .track-imagens-mobile,
+#opt2:checked ~ .split-container .track-imagens-web { transform: translateX(-33.333%); }
+
+#opt3:checked ~ .split-container .track-imagens-mobile,
+#opt3:checked ~ .split-container .track-imagens-web { transform: translateX(-66.666%); }
+
+/* Navegação */
+.slider-nav-split { margin-top: 40px; display: flex; justify-content: center; gap: 15px; }
+.slider-nav-split label { 
+    width: 12px; height: 12px; background: #ddd; border-radius: 50%; cursor: pointer; 
+}
+
+#opt1:checked ~ .slider-nav-split label[for="opt1"],
+#opt2:checked ~ .slider-nav-split label[for="opt2"],
+#opt3:checked ~ .slider-nav-split label[for="opt3"] { 
+    background: #00818c; transform: scale(1.3); 
+}
+
+input[name="slider-split"] { display: none; }
+
+.secao-planejamento {
+    padding: 100px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+}
+
+.loader-wrapper {
+    text-align: center;
+}
+
+/* Criando o Spinner (Ícone de Carregamento) */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 129, 140, 0.1); /* Círculo claro ao fundo */
+    border-top: 3px solid #00818c; /* A parte colorida que gira */
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+/* Estilo da frase */
+.status-texto {
+    color: #00818c;
+    font-weight: 300; /* Mantendo seu padrão fino */
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Animação de Rotação */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+
+/* ========================================
+   PAGINA LOGIN
+   ======================================== */
+
+/* Configuração para travar a tela */
+.body-login {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden; /* Impede a rolagem */
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-screen {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Imagem de Fundo */
+.login-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                url('sua-imagem-de-fundo.jpg'); /* COLOQUE SUA IMAGEM AQUI */
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+.login-container {
+    display: flex;
+    width: 900px;
+    max-width: 90%;
+    height: 550px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+/* Lado Esquerdo */
+.login-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    background: rgba(0, 129, 140, 0.2); /* Tom da sua marca suave */
+}
+
+.login-logo {
+    width: 220px;
+    margin-bottom: 25px;
+    height: auto;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+}
+
+.login-title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.login-subtitle {
+    color: #ffffff;
+    font-weight: 300;
+    font-size: 0.9rem;
+}
+
+/* Lado Direito (Formulário) */
+.login-box {
+    flex: 1;
+    background: #fff;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-form h2 {
+    color: #00818c;
+    font-weight: 300;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #00818c;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 15px;
+    background: #00818c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 1px;
+}
+
+.btn-login:hover {
+    background: #005f67;
+    transform: translateY(-2px);
+}
+
+.forgot-pass {
+    display: block;
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #999;
+    text-decoration: none;
+}
+
+/* Ajuste Responsivo */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        height: auto;
+    }
+    .login-info { padding: 20px; }
+    .login-box { padding: 30px; }
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CURACONNECT | Plataforma (demonstração)</title>
+<link rel="stylesheet" href="css/cc-app.css">
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <!-- ============ LOGO ============
+         Quando tiver a logo oficial, apague o texto "CURACONNECT" abaixo e coloque:
+         <img src="img/logo.png" alt="CURACONNECT" height="32">
+         (ajuste o caminho para onde a logo estiver no seu projeto)
+    -->
+    <div class="brand" id="logo">CURACONNECT</div>
+    <div class="switch" role="group" aria-label="Visualizar como">
+      <button data-role="medico">Médico</button><button data-role="paciente">Paciente</button><button data-role="familiar">Familiar</button>
+    </div>
+    <div class="who" id="who"></div>
+  </header>
+  <div class="app">
+    <nav class="side" aria-label="Principal">
+      <div class="area" id="area"></div>
+      <div id="nav"></div>
+      <div class="demo-note">Demonstração com dados fictícios. Troque o perfil no topo para ver o fluxo. Nada é enviado ou salvo.</div>
+    </nav>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+<div id="toast" role="status"></div>
+<script src="js/cc-data.js"></script>
+<script src="js/cc-utils.js"></script>
+<script src="js/cc-core.js"></script>
+<script src="js/cc-medico.js"></script>
+<script src="js/cc-paciente.js"></script>
+<script src="js/cc-familiar.js"></script>
+<script src="js/cc-paginas.js"></script>
+<script src="js/cc-agenda.js"></script>
+<script src="js/cc-boot.js"></script>
+</body>
+</html>

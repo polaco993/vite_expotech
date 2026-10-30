@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CURACONNECT - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css"> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="body-login">
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="nav-button">
+        <span class="nav-icon"></span>
+    </label>
+    <div class="nav-overlay"></div>
+    <nav class="nav-menu">
+        <div class="menu-header">
+            <h2 class="brand-name">CURACONNECT</h2>
+        </div>
+        <ul class="menu-list">
+            <li><a href="index.html" class="menu-link">Home</a></li>
+            <li><a href="servicos.html" class="menu-link">Serviços</a></li>
+            <li><a href="sobre.html" class="menu-link">Sobre</a></li>
+            <li><a href="tecnologias.html" class="menu-link">Tecnologias</a></li>
+            <li><a href="login.html" class="menu-link login-link">Login</a></li>
+        </ul>
+    </nav>
+
+    <main class="login-screen">
+        <div class="login-bg"></div> <div class="login-container">
+            <div class="login-info">
+                <img src="WhatsApp_Image_2026-01-24_at_17.14.05-removebg-preview.png" alt="Logo" class="login-logo">
+                <h1 class="login-title">CURACONNECT</h1>
+                <p class="login-subtitle">Fazendo a diferença com pequenos detalhes.</p>
+            </div>
+
+            <div class="login-box">
+                <form class="login-form">
+                    <h2>Entrar</h2>
+                    
+                    <div class="input-group">
+                        <label>E-mail (Gmail)</label>
+                        <input type="email" placeholder="seuemail@gmail.com" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Código de Acesso</label>
+                        <input type="text" placeholder="000000" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <input type="password" placeholder="********" required>
+                    </div>
+
+                    <a href="curaconnect-app.html" class="btn-login" style="display: block; text-align: center; text-decoration: none;">
+                     ENTRAR
+                    </a>
+                    
+                    <a href="#" class="forgot-pass">Esqueceu sua senha?</a>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+<script>
+    // Selecionamos o formulário
+    const loginForm = document.querySelector('.login-form');
+
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Impede a página de recarregar "de verdade"
+
+        // Aqui você pode mudar o texto do botão para "Entrando..."
+        const btn = document.querySelector('.btn-login');
+        btn.innerHTML = "VERIFICANDO...";
+        btn.style.opacity = "0.7";
+
+        // Simulamos um pequeno atraso de 1,5 segundos para parecer real
+        setTimeout(function() {
+            window.location.href = "index.html"; // Coloque aqui o nome da página de destino
+        }, 1500);
+    });
+</script>
+
+
+</body>
+</html>
